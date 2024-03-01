@@ -160,6 +160,23 @@ def display_study_details(study_info):
             else:
                 st.markdown("- No interventions available")
 
+             # Inclusion & Exclusion Criteria
+        st.markdown("**Eligibility Criteria**")
+        eligibility_criteria = study_info.get('EligibilityModule', {}).get('EligibilityCriteria', {}).get('Textblock', 'Not Available')
+        if eligibility_criteria:
+            # Splitting the criteria into Inclusion and Exclusion for better readability
+            criteria_sections = eligibility_criteria.split('Exclusion Criteria:')  # Assuming 'Exclusion Criteria:' is used to separate the sections
+            if len(criteria_sections) > 1:
+                st.markdown("**Inclusion Criteria:**")
+                st.markdown(criteria_sections[0].replace('Inclusion Criteria:', '').strip())  # Remove the title and extra whitespace
+                st.markdown("**Exclusion Criteria:**")
+                st.markdown(criteria_sections[1].strip())  # Remove extra whitespace
+            else:
+                # If there is no clear separation between Inclusion and Exclusion, display as a single block
+                st.markdown(criteria_sections[0].strip())  # Remove extra whitespace
+        else:
+            st.markdown("- No eligibility criteria available")
+
             # Participant Flow Module
             st.markdown("**Participant Flow**")
             participant_flow = study_info.get('ResultsSection', {}).get('ParticipantFlowModule', {})

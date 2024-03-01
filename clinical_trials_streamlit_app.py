@@ -109,6 +109,33 @@ def display_study_details(study_info):
         else:
             st.markdown("- No study design information available")
 
+             # Locations Module
+        st.markdown("**Locations**")
+        locations = study_info.get('ContactsLocationsModule', {}).get('LocationList', {}).get('Location', [])
+        if locations:
+            for location in locations:
+                # Each location can have multiple attributes like facility, city, country
+                facility = location.get('Facility', {}).get('Name', 'Not Available')
+                city = location.get('Facility', {}).get('Address', {}).get('City', 'Not Available')
+                state = location.get('Facility', {}).get('Address', {}).get('State', 'Not Available')
+                country = location.get('Facility', {}).get('Address', {}).get('Country', 'Not Available')
+                status = location.get('Status', 'Not Available')
+                contact = location.get('Contact', {}).get('LastName', 'Not Available') if location.get('Contact', {}) else 'Not Available'
+                phone = location.get('Contact', {}).get('Phone', 'Not Available') if location.get('Contact', {}) else 'Not Available'
+                # Display the location information
+                st.markdown(f"""
+                - **Facility:** {facility}
+                - **City:** {city}
+                - **State:** {state}
+                - **Country:** {country}
+                - **Status:** {status}
+                - **Contact:** {contact}
+                - **Phone:** {phone}
+                """)
+        else:
+            st.markdown("- No locations available")
+
+
             # Eligibility Module
             st.markdown("""
             **Eligibility**

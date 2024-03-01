@@ -98,14 +98,9 @@ def display_study_details(study_info):
         # Study Design Module
         st.markdown("**Study Design**")
         design = study_info.get('DesignModule', {})
-        
-        # Debugging: Check if design section is present
-        st.write("Debug: Design module content", design)  # Debugging statement
-
         if design:
             study_type = design.get('StudyType', 'Not Available')
-            enrollment_info = design.get('EnrollmentInfo', {})
-            enrollment = enrollment_info.get('EnrollmentCount', 'Not Available') if isinstance(enrollment_info, dict) else 'Not Available'
+            enrollment = design.get('EnrollmentInfo', {}).get('EnrollmentCount', 'Not Available')
             allocation = design.get('DesignInfo', {}).get('Allocation', 'Not Available')
             intervention_model = design.get('DesignInfo', {}).get('InterventionModel', 'Not Available')
             intervention_model_description = design.get('DesignInfo', {}).get('InterventionModelDescription', 'Not Available')
@@ -116,26 +111,21 @@ def display_study_details(study_info):
             primary_completion_date = design.get('PrimaryCompletionDate', {}).get('PrimaryCompletionDate', 'Not Available')
             study_completion_date = design.get('CompletionDate', {}).get('CompletionDate', 'Not Available')
 
-            # Display the study design details
             st.markdown(f"""
-                - **Study Type:** {study_type}
-                - **Enrollment:** {enrollment} participants
-                - **Allocation:** {allocation}
-                - **Intervention Model:** {intervention_model}
-                - **Intervention Model Description:** {intervention_model_description}
-                - **Masking:** {masking}
-                - **Primary Purpose:** {primary_purpose}
-                - **Official Title:** {official_title}
-                - **Study Start Date:** {study_start_date}
-                - **Estimated Primary Completion Date:** {primary_completion_date}
-                - **Estimated Study Completion Date:** {study_completion_date}
-                """)
+            - **Study Type:** {study_type}
+            - **Enrollment:** {enrollment} participants
+            - **Allocation:** {allocation}
+            - **Intervention Model:** {intervention_model}
+            - **Intervention Model Description:** {intervention_model_description}
+            - **Masking:** {masking}
+            - **Primary Purpose:** {primary_purpose}
+            - **Official Title:** {official_title}
+            - **Study Start Date:** {study_start_date}
+            - **Estimated Primary Completion Date:** {primary_completion_date}
+            - **Estimated Study Completion Date:** {study_completion_date}
+            """)
         else:
             st.markdown("- No study design information available")
-    else:
-        # If study_info is empty, show a message
-        st.write("Debug: No study info present")  # Debugging statement
-
 
             # Eligibility Module
             st.markdown("""

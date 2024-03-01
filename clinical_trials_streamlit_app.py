@@ -179,6 +179,41 @@ def display_study_details(study_info):
         else:
             st.markdown("- No eligibility criteria available")
 
+         # Baseline Characteristics Module
+        st.markdown("**Baseline Characteristics**")
+        baseline_characteristics = study_info.get('ResultsSection', {}).get('BaselineCharacteristicsModule', {})
+        if baseline_characteristics:
+            # General information about Baseline Characteristics
+            st.markdown("### General Information")
+            total_enrolled = baseline_characteristics.get('BaselinePopulationDescription', 'Not Available')
+            st.markdown(f"- **Total Enrolled:** {total_enrolled}")
+
+            # Detailed Baseline Characteristics
+            baseline_groups = baseline_characteristics.get('BaselineGroupList', {}).get('BaselineGroup', [])
+            if baseline_groups:
+                for group in baseline_groups:
+                    group_title = group.get('BaselineGroupTitle', 'Not Available')
+                    st.markdown(f"#### {group_title}")
+                    
+                    # Baseline Measurements
+                    measurements = group.get('BaselineMeasureList', {}).get('BaselineMeasure', [])
+                    for measure in measurements:
+                        measure_title = measure.get('BaselineMeasureTitle', 'Not Available')
+                        units = measure.get('BaselineMeasureUnitOfMeasure', 'Not Available')
+                        values = measure.get('BaselineMeasureValues', {}).get('BaselineMeasureValue', [])
+                        
+                        # Displaying each measure for this group
+                        st.markdown(f"- **{measure_title} ({units}):**")
+                        for value in values:
+                            category_title = value.get('BaselineCategoryTitle', 'Not Available')
+                            participants = value.get('BaselineCategoryValue', 'Not Available')
+                            st.markdown(f"  - **{category_title}:** {participants} participants")
+            else:
+                st.markdown("- No detailed baseline characteristics available")
+        else:
+            st.markdown("- No baseline characteristics information available")
+
+
             # Adverse Events Module
         st.markdown("**Adverse Events**")
         adverse_events = study_info.get('ResultsSection', {}).get('AdverseEventsModule', {})

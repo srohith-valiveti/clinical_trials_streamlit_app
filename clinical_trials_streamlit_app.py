@@ -266,6 +266,18 @@ def display_study_details(study_info):
 def main():
     st.title('Clinical Trials Search Dashboard')
 
+     # Dictionary Search Section
+    st.markdown("## Dictionary Search for Medical Terms")
+    st.markdown("Use the following resources to search for medical terms:")
+    
+    # MedDRA Dictionary Search
+    meddra_url = "https://www.meddra.org/"
+    st.markdown(f"[Search terms on MedDRA]({meddra_url}) (Medical Dictionary for Regulatory Activities)")
+
+    # CDISC Dictionary Search
+    cdisc_url = "https://www.cdisc.org/"
+    st.markdown(f"[Search terms on CDISC]({cdisc_url}) (Clinical Data Interchange Standards Consortium)")
+
     # User input for search
     query = st.text_input("Enter Sponsor Name, Study Name, Study ID, or Disease")
 

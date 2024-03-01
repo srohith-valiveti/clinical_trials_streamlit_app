@@ -316,15 +316,19 @@ def display_study_details(study_info):
             else:
                 st.markdown("- No participant flow information available")
 
-            # Keywords Module
+           # Keywords Module
         st.markdown("**Keywords**")
-        keywords = study_info.get('KeywordList', {}).get('Keyword', [])
+        keywords = study_info.get('KeywordList', {}).get('Keyword', '')
         if keywords:
-            # Display the keywords
-            st.markdown("- **Keywords:** " + ", ".join(keywords))
+            # Split the provided text by ":"
+            keyword_list = [keyword.strip() for keyword in keywords.split(":")[1].split(",")] if ":" in keywords else []
+            if keyword_list:
+                # Display the keywords
+                st.markdown("- **Keywords:** " + ", ".join(keyword_list))
+            else:
+                st.markdown("- No keywords available")
         else:
             st.markdown("- No keywords available")
-
 def main():
     st.title('Clinical Trials Search Dashboard')
 

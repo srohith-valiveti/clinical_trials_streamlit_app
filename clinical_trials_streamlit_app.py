@@ -213,6 +213,34 @@ def display_study_details(study_info):
         else:
             st.markdown("- No baseline characteristics information available")
 
+        # Efficacy Results - typically tied to Outcome Measures
+        st.markdown("**Efficacy Results**")
+        outcomes = study_info.get('ResultsSection', {}).get('OutcomesMeasuresModule', {})
+        if outcomes:
+            # Primary Outcomes
+            primary_outcomes = outcomes.get('PrimaryOutcomeList', {}).get('PrimaryOutcome', [])
+            if primary_outcomes:
+                st.markdown("**Primary Outcomes:**")
+                for outcome in primary_outcomes:
+                    outcome_measure = outcome.get('OutcomeMeasure', 'Not Available')
+                    outcome_description = outcome.get('OutcomeDescription', 'Not Available')
+                    outcome_time_frame = outcome.get('OutcomeTimeFrame', 'Not Available')
+                    outcome_result = outcome.get('OutcomeResults', 'Not Available')  # This might need adjustment based on data structure
+                    st.markdown(f"- **Measure:** {outcome_measure}, **Description:** {outcome_description}, **Time Frame:** {outcome_time_frame}, **Results:** {outcome_result}")
+
+            # Secondary Outcomes
+            secondary_outcomes = outcomes.get('SecondaryOutcomeList', {}).get('SecondaryOutcome', [])
+            if secondary_outcomes:
+                st.markdown("**Secondary Outcomes:**")
+                for outcome in secondary_outcomes:
+                    outcome_measure = outcome.get('OutcomeMeasure', 'Not Available')
+                    outcome_description = outcome.get('OutcomeDescription', 'Not Available')
+                    outcome_time_frame = outcome.get('OutcomeTimeFrame', 'Not Available')
+                    outcome_result = outcome.get('OutcomeResults', 'Not Available')  # Again, adjust based on actual data
+                    st.markdown(f"- **Measure:** {outcome_measure}, **Description:** {outcome_description}, **Time Frame:** {outcome_time_frame}, **Results:** {outcome_result}")
+        else:
+            st.markdown("- No efficacy results information available")
+
 
             # Adverse Events Module
         st.markdown("**Adverse Events**")

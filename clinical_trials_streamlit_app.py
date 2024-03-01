@@ -179,6 +179,33 @@ def display_study_details(study_info):
         else:
             st.markdown("- No eligibility criteria available")
 
+            # Adverse Events Module
+        st.markdown("**Adverse Events**")
+        adverse_events = study_info.get('ResultsSection', {}).get('AdverseEventsModule', {})
+        if adverse_events:
+            # General information about Adverse Events
+            total_subjects = adverse_events.get('SeriousEventTotalSubjects', 'Not Available')
+            total_events = adverse_events.get('SeriousEventTotalEvents', 'Not Available')
+            st.markdown(f"- **Total Subjects in Serious Adverse Events:** {total_subjects}")
+            st.markdown(f"- **Total Serious Adverse Events:** {total_events}")
+
+            # Detailed Adverse Events, typically listed as categories or specific events
+            # This is just an example, adjust based on actual structure and data
+            adverse_event_list = adverse_events.get('SeriousAdverseEventsList', {}).get('SeriousAdverseEvent', [])
+            if adverse_event_list:
+                st.markdown("**Detailed Serious Adverse Events:**")
+                for event in adverse_event_list:
+                    event_term = event.get('SeriousAdverseEventTerm', 'Not Available')
+                    event_count = event.get('SeriousAdverseEventCount', 'Not Available')
+                    event_subjects = event.get('SeriousAdverseEventSubjectsAffected', 'Not Available')
+                    st.markdown(f"- **Event:** {event_term}, **Count:** {event_count}, **Subjects Affected:** {event_subjects}")
+            else:
+                st.markdown("- No detailed serious adverse events available")
+
+            # You can also add non-serious adverse events following a similar pattern if relevant
+        else:
+            st.markdown("- No adverse events information available")
+
             # Participant Flow Module
             st.markdown("**Participant Flow**")
             participant_flow = study_info.get('ResultsSection', {}).get('ParticipantFlowModule', {})

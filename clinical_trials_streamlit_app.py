@@ -160,20 +160,22 @@ def display_study_details(study_info):
             else:
                 st.markdown("- No interventions available")
 
-             # Inclusion & Exclusion Criteria
+            # Inclusion & Exclusion Criteria
         st.markdown("**Eligibility Criteria**")
-        eligibility_criteria = study_info.get('EligibilityModule', {}).get('EligibilityCriteria', {}).get('Textblock', 'Not Available')
-        if eligibility_criteria:
-            # Splitting the criteria into Inclusion and Exclusion for better readability
-            criteria_sections = eligibility_criteria.split('Exclusion Criteria:')  # Assuming 'Exclusion Criteria:' is used to separate the sections
+        # Directly access the eligibility criteria text block if it exists
+        eligibility_criteria = study_info.get('EligibilityModule', {}).get('EligibilityCriteria', 'Not Available')
+        if eligibility_criteria != 'Not Available':
+            # Assuming the criteria are separated into Inclusion and Exclusion in the text block
+            criteria_sections = eligibility_criteria.split('Exclusion Criteria:')
             if len(criteria_sections) > 1:
+                # If there is clear separation between Inclusion and Exclusion
                 st.markdown("**Inclusion Criteria:**")
-                st.markdown(criteria_sections[0].replace('Inclusion Criteria:', '').strip())  # Remove the title and extra whitespace
+                st.markdown(criteria_sections[0].replace('Inclusion Criteria:', '').strip())  # Clean up Inclusion text
                 st.markdown("**Exclusion Criteria:**")
-                st.markdown(criteria_sections[1].strip())  # Remove extra whitespace
+                st.markdown(criteria_sections[1].strip())  # Clean up Exclusion text
             else:
-                # If there is no clear separation between Inclusion and Exclusion, display as a single block
-                st.markdown(criteria_sections[0].strip())  # Remove extra whitespace
+                # If no clear separation, display the entire criteria as one block
+                st.markdown(eligibility_criteria.strip())  # Just clean up and display the string
         else:
             st.markdown("- No eligibility criteria available")
 

@@ -109,6 +109,16 @@ def display_study_details(study_info):
         else:
             st.markdown("- No study design information available")
 
+            # Locations Module - Count Only
+        st.markdown("**Number of Locations**")
+        locations = study_info.get('ContactsLocationsModule', {}).get('LocationList', {}).get('Location', [])
+        if locations:
+            # Count the number of locations
+            number_of_locations = len(locations)
+            st.markdown(f"- **Total Locations:** {number_of_locations}")
+        else:
+            st.markdown("- No locations information available")
+
             # Eligibility Module
             st.markdown("""
             **Eligibility**

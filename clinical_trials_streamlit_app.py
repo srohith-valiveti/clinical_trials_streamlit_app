@@ -101,28 +101,10 @@ def display_study_details(study_info):
         if design:
             study_type = design.get('StudyType', 'Not Available')
             enrollment = design.get('EnrollmentInfo', {}).get('EnrollmentCount', 'Not Available')
-            allocation = design.get('DesignInfo', {}).get('Allocation', 'Not Available')
-            intervention_model = design.get('DesignInfo', {}).get('InterventionModel', 'Not Available')
-            intervention_model_description = design.get('DesignInfo', {}).get('InterventionModelDescription', 'Not Available')
-            masking = design.get('DesignInfo', {}).get('Masking', 'Not Available')
-            primary_purpose = design.get('DesignInfo', {}).get('PrimaryPurpose', 'Not Available')
-            official_title = design.get('OfficialTitle', 'Not Available')
-            study_start_date = design.get('StudyStartDate', 'Not Available')
-            primary_completion_date = design.get('PrimaryCompletionDate', {}).get('PrimaryCompletionDate', 'Not Available')
-            study_completion_date = design.get('CompletionDate', {}).get('CompletionDate', 'Not Available')
 
             st.markdown(f"""
             - **Study Type:** {study_type}
             - **Enrollment:** {enrollment} participants
-            - **Allocation:** {allocation}
-            - **Intervention Model:** {intervention_model}
-            - **Intervention Model Description:** {intervention_model_description}
-            - **Masking:** {masking}
-            - **Primary Purpose:** {primary_purpose}
-            - **Official Title:** {official_title}
-            - **Study Start Date:** {study_start_date}
-            - **Estimated Primary Completion Date:** {primary_completion_date}
-            - **Estimated Study Completion Date:** {study_completion_date}
             """)
         else:
             st.markdown("- No study design information available")

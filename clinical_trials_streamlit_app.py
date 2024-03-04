@@ -89,19 +89,10 @@ def display_study_details(study_info):
                 - **Accepts Healthy Volunteers:** {healthy_volunteers}
             """)
 
-            # Locations Module
+            # Locations Module - Count Only
             locations = study_info.get('ContactsLocationsModule', {}).get('LocationList', {}).get('Location', [])
-            if locations:
-                st.markdown("**Locations**")
-                for location in locations:
-                    facility = location.get('Facility', {}).get('Name', 'Not Available')
-                    city = location.get('Facility', {}).get('Address', {}).get('City', 'Not Available')
-                    state = location.get('Facility', {}).get('Address', {}).get('State', 'Not Available')
-                    country = location.get('Facility', {}).get('Address', {}).get('Country', 'Not Available')
-                    st.markdown(
-                        f"- **Facility:** {facility}, **City:** {city}, **State:** {state}, **Country:** {country}")
-            else:
-                st.markdown("- No location information available")
+            number_of_locations = len(locations)  # Just count the number of items in the list
+            st.markdown("**Number of Locations:** {}".format(number_of_locations))
 
             # Keywords Module
             keywords_section = study_info.get('ConditionsModule', {}).get('KeywordList', {}).get('Keyword', [])

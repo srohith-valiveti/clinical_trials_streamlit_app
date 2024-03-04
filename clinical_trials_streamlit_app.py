@@ -65,10 +65,13 @@ def display_study_details(study_info):
 
            # Status Module
             st.markdown("**Status**")
-            overall_status = study_info.get('StatusModule', {}).get('OverallStatus', 'Not Available')
-            start_date = study_info.get('StatusModule', {}).get('StartDate', {}).get('StartDate', 'Not Available')
-            completion_date = study_info.get('StatusModule', {}).get('CompletionDate', {}).get('CompletionDate', 'Not Available')
-            last_update_date = study_info.get('StatusModule', {}).get('LastUpdateSubmitDate', 'Not Available')
+            status_module = study_info.get('StatusModule', {})
+            overall_status = status_module.get('OverallStatus', 'Not Available')
+
+            # Adjusting according to your structure:
+            start_date = status_module.get('StartDateStruct', {}).get('StartDate', 'Not Available')
+            completion_date = status_module.get('CompletionDateStruct', {}).get('CompletionDate', 'Not Available')
+            last_update_date = status_module.get('LastUpdateSubmitDate', 'Not Available')
             st.markdown(f"- **Overall Status:** {overall_status}")
             st.markdown(f"- **Start Date:** {start_date}")
             st.markdown(f"- **Completion Date:** {completion_date}")

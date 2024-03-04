@@ -111,12 +111,11 @@ def display_study_details(study_info):
         with col2:
             # Study Design Module
             st.markdown("**Study Design**")
+            study_design = study_info.get('DesignModule', {})
             study_type = study_design.get('StudyType', 'Not Available')
-            # Assuming DesignInfo is correctly fetched and structured
-            design_info = study_design.get('DesignInfo', {})
-            study_design_allocation = design_info.get('Allocation', 'Not Available')  # Direct access if no further nesting
-            study_design_intervention = design_info.get('InterventionModel', 'Not Available')
-            study_design_purpose = design_info.get('PrimaryPurpose', 'Not Available')
+            study_design_allocation = study_design.get('DesignInfo', {}).get('Allocation', 'Not Available')
+            study_design_intervention = study_design.get('DesignInfo', {}).get('InterventionModel', 'Not Available')
+            study_design_purpose = study_design.get('DesignInfo', {}).get('PrimaryPurpose', 'Not Available')
             st.markdown(f"""
                 - **Study Type:** {study_type}
                 - **Allocation:** {study_design_allocation}

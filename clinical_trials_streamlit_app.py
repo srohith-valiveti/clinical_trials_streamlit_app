@@ -195,12 +195,8 @@ def display_study_details(study_info):
                 st.markdown("- No baseline group information available")
         else:
             st.markdown("- No baseline characteristics information available")
-
-
-
-    else:
+ else:
         st.error("Failed to fetch study details: Server responded with an error")
-
 
 def main():
     st.title('Clinical Trials Search Dashboard')

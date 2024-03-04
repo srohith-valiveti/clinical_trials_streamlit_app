@@ -63,19 +63,19 @@ def display_study_details(study_info):
                 study_info['DesignModule'].get('StudyType', 'Not Available')
             ))
 
-           # Status Module
-            st.markdown("**Status**")
-            status_module = study_info.get('StatusModule', {})
-            overall_status = status_module.get('OverallStatus', 'Not Available')
-
-            # Adjusting according to your structure:
-            start_date = status_module.get('StartDateStruct', {}).get('StartDate', 'Not Available')
-            completion_date = status_module.get('CompletionDateStruct', {}).get('CompletionDate', 'Not Available')
-            last_update_date = status_module.get('LastUpdateSubmitDate', 'Not Available')
-            st.markdown(f"- **Overall Status:** {overall_status}")
-            st.markdown(f"- **Start Date:** {start_date}")
-            st.markdown(f"- **Completion Date:** {completion_date}")
-            st.markdown(f"- **Last Update Date:** {last_update_date}")
+          # Status Module
+            st.markdown("""
+            **Status**
+            - **Overall Status:** {}
+            - **Start Date:** {}
+            - **Completion Date:** {}
+            - **Last Update Posted:** {}
+            """.format(
+                study_info['StatusModule'].get('OverallStatus', 'Not Available'),
+                study_info['StatusModule'].get('StartDate', 'Not Available'),
+                study_info['StatusModule'].get('CompletionDate', {}).get('CompletionDate', 'Not Available'),
+                study_info['StatusModule'].get('LastUpdateSubmitDate', 'Not Available')
+            ))
 
             # Design Module, Eligibility Module, Locations, Outcomes, Adverse Events, Keywords - Existing code...
 

@@ -64,7 +64,7 @@ def display_study_details(study_info):
             ))
 
             # Status Module
-             status_module = study_info.get('StatusModule', {})
+            status_module = study_info.get('StatusModule', {})
             overall_status = status_module.get('OverallStatus', 'Not Available')
             start_date = status_module.get('StartDateStruct', {}).get('StartDateStr', 'Not Available')  # Adjusted path
             completion_date = status_module.get('CompletionDateStruct', {}).get('CompletionDateStr', 'Not Available')  # Assuming similar structure

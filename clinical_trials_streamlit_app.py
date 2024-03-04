@@ -67,9 +67,10 @@ def display_study_details(study_info):
             status_module = study_info.get('StatusModule', {})
             overall_status = status_module.get('OverallStatus', 'Not Available')
             start_date = status_module.get('StartDateStruct', {}).get('StartDateStr', 'Not Available')  # Adjusted path
-            completion_date = status_module.get('CompletionDateStruct', {}).get('CompletionDateStr', 'Not Available')  # Assuming similar structure for consistency
+            completion_date = status_module.get('CompletionDateStruct', {}).get('CompletionDateStr',
+                                                                                'Not Available')  # Assuming similar structure for consistency
             last_update_date = status_module.get('LastUpdateSubmitDate', 'Not Available')
-    
+
             # This is where you print or display the status information
             st.markdown(f"**Status**")
             st.markdown(f"- **Overall Status:** {overall_status}")
@@ -195,8 +196,12 @@ def display_study_details(study_info):
                 st.markdown("- No baseline group information available")
         else:
             st.markdown("- No baseline characteristics information available")
- else:
+
+
+
+    else:
         st.error("Failed to fetch study details: Server responded with an error")
+
 
 def main():
     st.title('Clinical Trials Search Dashboard')

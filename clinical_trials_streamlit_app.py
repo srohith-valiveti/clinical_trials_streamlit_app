@@ -161,18 +161,6 @@ def display_study_details(study_info):
 
                 # Here you could add more detailed adverse events information if needed
 
-                # Participant Flow Module
-            st.markdown("**Participant Flow**")
-            participant_flow = study_info.get('ResultsSection', {}).get('ParticipantFlowModule', {})
-            if participant_flow:
-                recruitment_details = participant_flow.get('RecruitmentDetails', 'Not Available')
-                pre_assignment_details = participant_flow.get('PreAssignmentDetails', 'Not Available')
-                st.markdown(f"""
-                       - **Recruitment Details:** {recruitment_details}
-                       - **Pre-Assignment Details:** {pre_assignment_details}
-                   """)
-                # Additional participant flow details could be included here if necessary
-
         # Baseline Characteristics Module
         baseline_characteristics = study_info.get('ResultsSection', {}).get('BaselineCharacteristicsModule', {})
         if baseline_characteristics:

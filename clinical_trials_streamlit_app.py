@@ -63,21 +63,17 @@ def display_study_details(study_info):
                 study_info['DesignModule'].get('StudyType', 'Not Available')
             ))
 
-                # Status Module
-    status_module = study_info.get('StatusModule', {})
-    overall_status = status_module.get('OverallStatus', 'Not Available')
-    start_date = status_module.get('StartDateStruct', {}).get('StartDateStr', 'Not Available')  # Adjusted path
-    completion_date = status_module.get('CompletionDateStruct', {}).get('CompletionDateStr', 'Not Available')  # Assuming similar structure
-    last_update_date = status_module.get('LastUpdateSubmitDate', 'Not Available')
-    
-    st.markdown(f"""
-        **Status**
-        - **Overall Status:** {overall_status}
-        - **Start Date:** {start_date}
-        - **Completion Date:** {completion_date}
-        - **Last Update Date:** {last_update_date}
-    """)
-
+            # Status Module
+            st.markdown("**Status**")
+            overall_status = study_info['StatusModule'].get('OverallStatus', 'Not Available')
+            start_date = study_info['StatusModule'].get('StartDate', {}).get('StartDate', 'Not Available')
+            completion_date = study_info['StatusModule'].get('CompletionDate', {}).get('CompletionDate',
+                                                                                       'Not Available')
+            last_update_date = study_info['StatusModule'].get('LastUpdateSubmitDate', 'Not Available')
+            st.markdown(f"- **Overall Status:** {overall_status}")
+            st.markdown(f"- **Start Date:** {start_date}")
+            st.markdown(f"- **Completion Date:** {completion_date}")
+            st.markdown(f"- **Last Update Date:** {last_update_date}")
 
             # Eligibility Module
             st.markdown("**Eligibility**")

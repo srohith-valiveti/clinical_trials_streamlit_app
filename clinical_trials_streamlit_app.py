@@ -2,9 +2,8 @@ import streamlit as st
 import requests
 import pandas as pd
 
-
 # Cache data to improve performance
-@st.cache  # Note: Corrected from @st.cache_data
+@st.cache
 def search_studies(query):
     url = f"https://clinicaltrials.gov/api/query/full_studies?expr={query}&max_rnk=50&fmt=json"
     response = requests.get(url)
@@ -14,19 +13,15 @@ def search_studies(query):
         for study_info in data['FullStudiesResponse']['FullStudies']:
             study = {
                 'NCT Number': study_info['Study']['ProtocolSection']['IdentificationModule']['NCTId'],
-                'Title': study_info['Study']['ProtocolSection']['IdentificationModule'].get('OfficialTitle',
-                                                                                            'Not Available'),
+                'Title': study_info['Study']['ProtocolSection']['IdentificationModule'].get('OfficialTitle', 'Not Available'),
                 'Status': study_info['Study']['ProtocolSection']['StatusModule']['OverallStatus'],
-                'Sponsor': study_info['Study']['ProtocolSection']['SponsorCollaboratorsModule'].get('LeadSponsor',
-                                                                                                    {}).get(
-                    'LeadSponsorName', 'Not Available'),
+                'Sponsor': study_info['Study']['ProtocolSection']['SponsorCollaboratorsModule'].get('LeadSponsor', {}).get('LeadSponsorName', 'Not Available'),
             }
             studies.append(study)
         return pd.DataFrame(studies)
     else:
         st.error("Failed to fetch data: Server responded with an error")
         return pd.DataFrame()
-
 
 def view_study_details(nct_number):
     url = f"https://clinicaltrials.gov/api/query/full_studies?expr={nct_number}&fmt=json"
@@ -39,165 +34,133 @@ def view_study_details(nct_number):
         st.error("Failed to fetch study details: Server responded with an error")
         return None
 
-
 def display_study_details(study_info):
     if study_info:  # Check if study_info is not None
-        # Display sections with markdown for readability
+        st.markdown("<style> body { font-family: 'Arial', sans-serif; font-size: 14px; } </style>", unsafe_allow_html=True)
+
         st.markdown("## Study Details")
 
-        # Use columns to organize the display
-        col1, col2 = st.columns(2)
+        st.markdown("### Identification")
+        identification = study_info['IdentificationModule']
+        st.text(f"NCT Number: {identification.get('NCTId', 'Not Available')}")
+        st.text(f"Org Study ID: {identification.get('OrgStudyIdInfo', {}).get('OrgStudyId', 'Not Available')}")
+        st.text(f"Organization Name: {identification.get('Organization', {}).get('OrgFullName', 'Not Available')}")
+        st.text(f"Organization Class: {identification.get('Organization', {}).get('OrgClass', 'Not Available')}")
+        st.text(f"Brief Title: {identification.get('BriefTitle', 'Not Available')}")
+        st.text(f"Official Title: {identification.get('OfficialTitle', 'Not Available')}")
+        st.text(f"Acronym: {identification.get('Acronym', 'Not Available')}")
 
-        with col1:
-            # Identification Module
-            st.markdown("""
-            **Identification**
-            - **Title:** {}
-            - **Brief Title:** {}
-            - **Acronym:** {}
-            - **Study Type:** {}
-            """.format(
-                study_info['IdentificationModule'].get('OfficialTitle', 'Not Available'),
-                study_info['IdentificationModule'].get('BriefTitle', 'Not Available'),
-                study_info['IdentificationModule'].get('Acronym', 'Not Available'),
-                study_info['DesignModule'].get('StudyType', 'Not Available')
-            ))
+        st.markdown("### Enrollment")
+        enrollment_info = study_info.get('EnrollmentInfo', {})
+        st.text(f"Enrollment Count: {enrollment_info.get('EnrollmentCount', 'Not Available')}")
+        st.text(f"Enrollment Type: {enrollment_info.get('EnrollmentType', 'Not Available')}")
 
-            # Status Module
-            status_module = study_info.get('StatusModule', {})
-            overall_status = status_module.get('OverallStatus', 'Not Available')
-            start_date = status_module.get('StartDateStruct', {}).get('StartDateStr', 'Not Available')  # Adjusted path
-            completion_date = status_module.get('CompletionDateStruct', {}).get('CompletionDateStr',
-                                                                                'Not Available')  # Assuming similar structure for consistency
-            last_update_date = status_module.get('LastUpdateSubmitDate', 'Not Available')
+        st.markdown("### Status")
+        status = study_info['StatusModule']
+        st.text(f"Status Verified Date: {status.get('StatusVerifiedDate', 'Not Available')}")
+        st.text(f"Overall Status: {status.get('OverallStatus', 'Not Available')}")
+        st.text(f"Has Expanded Access: {status.get('ExpandedAccessInfo', {}).get('HasExpandedAccess', 'Not Available')}")
+        st.text(f"Start Date: {status.get('StartDateStruct', {}).get('StartDate', 'Not Available')} ({status.get('StartDateStruct', {}).get('StartDateType', 'Not Available')})")
+        st.text(f"Primary Completion Date: {status.get('PrimaryCompletionDateStruct', {}).get('CompletionDate', 'Not Available')} ({status.get('PrimaryCompletionDateStruct', {}).get('CompletionDateType', 'Not Available')})")
+        st.text(f"Completion Date: {status.get('CompletionDateStruct', {}).get('CompletionDate', 'Not Available')} ({status.get('CompletionDateStruct', {}).get('CompletionDateType', 'Not Available')})")
+        st.text(f"Study First Submit Date: {status.get('StudyFirstSubmitDate', 'Not Available')}")
+        st.text(f"Study First Submit QC Date: {status.get('StudyFirstSubmitQCDate', 'Not Available')}")
+        st.text(f"Study First Post Date: {status.get('StudyFirstPostDateStruct', {}).get('StudyFirstPostDate', 'Not Available')} ({status.get('StudyFirstPostDateStruct', {}).get('StudyFirstPostDateType', 'Not Available')})")
+        st.text(f"Last Update Submit Date: {status.get('LastUpdateSubmitDate', 'Not Available')}")
+        st.text(f"Last Update Post Date: {status.get('LastUpdatePostDateStruct', {}).get('LastUpdatePostDate', 'Not Available')} ({status.get('LastUpdatePostDateStruct', {}).get('LastUpdatePostDateType', 'Not Available')})")
 
-            # This is where you print or display the status information
-            st.markdown(f"**Status**")
-            st.markdown(f"- **Overall Status:** {overall_status}")
-            st.markdown(f"- **Start Date:** {start_date}")
-            st.markdown(f"- **Completion Date:** {completion_date}")
-            st.markdown(f"- **Last Update Date:** {last_update_date}")
+        st.markdown("### Conditions")
+        conditions = study_info['ConditionsModule']['ConditionList']['Condition']
+        st.markdown(f"**Conditions:** {', '.join(conditions)}")
 
-            # Eligibility Module
-            st.markdown("**Eligibility**")
-            eligibility = study_info.get('EligibilityModule', {})
-            age_minimum = eligibility.get('MinimumAge', 'Not Available')
-            age_maximum = eligibility.get('MaximumAge', 'Not Available')
-            gender = eligibility.get('Gender', 'Not Available')
-            healthy_volunteers = eligibility.get('HealthyVolunteers', 'Not Available')
-            st.markdown(f"""
-                - **Minimum Age:** {age_minimum}
-                - **Maximum Age:** {age_maximum}
-                - **Gender:** {gender}
-                - **Accepts Healthy Volunteers:** {healthy_volunteers}
-            """)
+        st.markdown("### Keywords")
+        keywords = study_info['ConditionsModule']['KeywordList']['Keyword']
+        st.markdown(f"**Keywords:** {', '.join(keywords)}")
 
-            # Locations Module - Count Only
-            locations = study_info.get('ContactsLocationsModule', {}).get('LocationList', {}).get('Location', [])
-            number_of_locations = len(locations)  # Just count the number of items in the list
-            st.markdown("**Number of Locations:** {}".format(number_of_locations))
+        st.markdown("### Description")
+        description = study_info['DescriptionModule']
+        st.markdown(f"**Brief Summary:** {description.get('BriefSummary', 'Not Available')}")
+        st.markdown(f"**Detailed Description:** {description.get('DetailedDescription', 'Not Available')}")
 
-            # Keywords Module
-            keywords_section = study_info.get('ConditionsModule', {}).get('KeywordList', {}).get('Keyword', [])
-            if keywords_section:
-                st.markdown("**Keywords**")
-                keywords = ', '.join(keywords_section)
-                st.markdown(f"- **Keywords:** {keywords}")
-            else:
-                st.markdown("- No keywords available")
+        st.markdown("### Design")
+        design = study_info['DesignModule']
+        st.text(f"Study Type: {design.get('StudyType', 'Not Available')}")
+        phases = design.get('PhaseList', {}).get('Phase', [])
+        st.text(f"Phases: {', '.join(phases)}")
 
-        # Continuing within the 'display_study_details' function:
+        st.markdown("### Design Info")
+        design_info = design.get('DesignInfo', {})
+        st.text(f"Allocation: {design_info.get('DesignAllocation', 'Not Available')}")
+        st.text(f"Intervention Model: {design_info.get('DesignInterventionModel', 'Not Available')}")
+        st.text(f"Intervention Model Description: {design_info.get('DesignInterventionModelDescription', 'Not Available')}")
+        st.text(f"Primary Purpose: {design_info.get('DesignPrimaryPurpose', 'Not Available')}")
 
-        with col2:
-            # Study Design Module
-            st.markdown("**Study Design**")
-            study_design = study_info.get('DesignModule', {})
-            study_type = study_design.get('StudyType', 'Not Available')
-            study_design_allocation = study_design.get('DesignInfo', {}).get('Allocation', 'Not Available')
-            study_design_intervention = study_design.get('DesignInfo', {}).get('InterventionModel', 'Not Available')
-            study_design_purpose = study_design.get('DesignInfo', {}).get('PrimaryPurpose', 'Not Available')
-            st.markdown(f"""
-                - **Study Type:** {study_type}
-                - **Allocation:** {study_design_allocation}
-                - **Intervention Model:** {study_design_intervention}
-                - **Primary Purpose:** {study_design_purpose}
-            """)
+        st.markdown("### Masking")
+        masking_info = design_info.get('DesignMaskingInfo', {})
+        st.text(f"Masking: {masking_info.get('DesignMasking', 'Not Available')}")
+        who_masked = masking_info.get('DesignWhoMaskedList', {}).get('DesignWhoMasked', [])
+        st.text(f"Who is Masked: {', '.join(who_masked)}")
 
-            # Outcomes Module
-            st.markdown("**Outcomes**")
-            outcomes = study_info.get('OutcomesModule', {})
-            primary_outcomes = outcomes.get('PrimaryOutcomeList', {}).get('PrimaryOutcome', [])
-            if primary_outcomes:
-                st.markdown("**Primary Outcomes:**")
-                for outcome in primary_outcomes:
-                    measure = outcome.get('PrimaryOutcomeMeasure', 'Not Available')
-                    time_frame = outcome.get('PrimaryOutcomeTimeFrame', 'Not Available')
-                    description = outcome.get('PrimaryOutcomeDescription', 'Not Available')
-                    st.markdown(
-                        f"- **Measure:** {measure}, **Time Frame:** {time_frame}, **Description:** {description}")
+        st.markdown("### Arms & Interventions")
+        arm_groups = study_info.get('ArmsInterventionsModule', {}).get('ArmGroupList', {}).get('ArmGroup', [])
+        if isinstance(arm_groups, dict):
+            arm_groups = [arm_groups]
 
-            st.markdown("**Secondary Outcomes**")
-            secondary_outcomes = study_info.get('OutcomesModule', {}).get('SecondaryOutcomeList', {}).get(
-                'SecondaryOutcome', [])
-            if secondary_outcomes:
-                for outcome in secondary_outcomes:
-                    measure = outcome.get('SecondaryOutcomeMeasure', 'Not Available')
-                    time_frame = outcome.get('SecondaryOutcomeTimeFrame', 'Not Available')
-                    description = outcome.get('SecondaryOutcomeDescription', 'Not Available')
-                    st.markdown(
-                        f"- **Measure:** {measure}, **Time Frame:** {time_frame}, **Description:** {description}")
-            else:
-                st.markdown("- No secondary outcomes available")
+        for arm in arm_groups:
+            arm_label = arm.get('ArmGroupLabel', 'Not Available')
+            arm_type = arm.get('ArmGroupType', 'Not Available')
+            arm_description = arm.get('ArmGroupDescription', 'Not Available')
+            interventions = arm.get('ArmGroupInterventionList', {}).get('ArmGroupInterventionName', [])
+            if isinstance(interventions, str):
+                interventions = [interventions]
+            interventions_str = ', '.join(interventions) if interventions else 'Not Available'
 
-                # Adverse Events Module
-                st.markdown("**Adverse Events**")
-                adverse_events = study_info.get('ResultsSection', {}).get('AdverseEventsModule', {})
-                if adverse_events:
-                    total_subjects_affected = adverse_events.get('TotalSubjectsAffected', 'Not Available')
-                    total_adverse_events = adverse_events.get('TotalAdverseEvents', 'Not Available')
-                    st.markdown(f"""
-                            - **Total Subjects Affected:** {total_subjects_affected}
-                            - **Total Adverse Events:** {total_adverse_events}
-                        """)
+            st.markdown(f"**{arm_label} ({arm_type})**")
+            st.text(f"Description: {arm_description}")
+            st.text(f"Interventions: {interventions_str}")
+            st.markdown("---")
 
-                # Here you could add more detailed adverse events information if needed
+        st.markdown("### Outcomes")
+        primary_outcomes = study_info['OutcomesModule'].get('PrimaryOutcomeList', {}).get('PrimaryOutcome', [])
+        if primary_outcomes:
+            st.markdown("**Primary Outcomes:**")
+            for outcome in primary_outcomes:
+                measure = outcome.get('PrimaryOutcomeMeasure', 'Not Available')
+                description = outcome.get('PrimaryOutcomeDescription', 'Not Available')
+                time_frame = outcome.get('PrimaryOutcomeTimeFrame', 'Not Available')
+                st.text(f"- Measure: {measure}")
+                st.text(f"  Description: {description}")
+                st.text(f"  Time Frame: {time_frame}")
+            st.markdown("---")
 
-        # Baseline Characteristics Module
-        baseline_characteristics = study_info.get('ResultsSection', {}).get('BaselineCharacteristicsModule', {})
-        if baseline_characteristics:
-            st.markdown("### Baseline Characteristics")
-            total_enrolled = baseline_characteristics.get('BaselinePopulationDescription', 'Not Available')
-            st.markdown(f"- **Total Enrolled:** {total_enrolled}")
+        secondary_outcomes = study_info['OutcomesModule'].get('SecondaryOutcomeList', {}).get('SecondaryOutcome', [])
+        if secondary_outcomes:
+            st.markdown("**Secondary Outcomes:**")
+            for outcome in secondary_outcomes:
+                measure = outcome.get('SecondaryOutcomeMeasure', 'Not Available')
+                description = outcome.get('SecondaryOutcomeDescription', 'Not Available')
+                time_frame = outcome.get('SecondaryOutcomeTimeFrame', 'Not Available')
+                st.text(f"- Measure: {measure}")
+                st.text(f"  Description: {description}")
+                st.text(f"  Time Frame: {time_frame}")
+            st.markdown("---")
 
-            baseline_groups = baseline_characteristics.get('BaselineGroupList', {}).get('BaselineGroup', [])
-            if baseline_groups:
-                for group in baseline_groups:
-                    group_title = group.get('BaselineGroupTitle', 'Not Available')
-                    st.markdown(f"#### Group: {group_title}")
+        st.markdown("### Eligibility Criteria")
+        eligibility = study_info.get('EligibilityModule', {})
+        st.text(f"Healthy Volunteers: {eligibility.get('HealthyVolunteers', 'Not Available')}")
+        st.text(f"Gender: {eligibility.get('Gender', 'Not Available')}")
+        st.text(f"Minimum Age: {eligibility.get('MinimumAge', 'Not Available')}")
+        st.text(f"Maximum Age: {eligibility.get('MaximumAge', 'Not Available')}")
 
-                    # Baseline Measurements
-                    measurements = group.get('BaselineMeasureList', {}).get('BaselineMeasure', [])
-                    for measure in measurements:
-                        measure_title = measure.get('BaselineMeasureTitle', 'Not Available')
-                        measure_unit = measure.get('BaselineMeasureUnitOfMeasure', 'Not Available')
-                        st.markdown(f"- **Measure:** {measure_title} ({measure_unit})")
+        st.markdown("**Key Inclusion Criteria:**", unsafe_allow_html=True)
+        inclusion_criteria = eligibility.get('EligibilityCriteria', '').split('\n\n')
+        for criterion in inclusion_criteria:
+            st.text(f"- {criterion}")
 
-                        # Categories within each measurement
-                        categories = measure.get('BaselineCategoryList', {}).get('BaselineCategory', [])
-                        for category in categories:
-                            category_title = category.get('BaselineCategoryTitle', 'Not Available')
-                            measurements = category.get('BaselineMeasurementList', {}).get('BaselineMeasurement', [])
-                            for measurement in measurements:
-                                measure_value = measurement.get('BaselineMeasurementValue', 'Not Available')
-                                participants = measurement.get('NumberOfParticipants', 'Not Available')
-                                st.markdown(
-                                    f"  - **Category:** {category_title}, **Value:** {measure_value}, **Participants:** {participants}")
-            else:
-                st.markdown("- No baseline group information available")
-        else:
-            st.markdown("- No baseline characteristics information available")
-
-
+        st.markdown("**Key Exclusion Criteria:**", unsafe_allow_html=True)
+        exclusion_criteria = eligibility.get('EligibilityCriteria', '').split('\n\n')
+        for criterion in exclusion_criteria:
+            st.text(f"- {criterion}")
 
     else:
         st.error("Failed to fetch study details: Server responded with an error")
@@ -218,13 +181,12 @@ def main():
     cdisc_url = "https://www.cdisc.org/"
     st.markdown(f"[Search terms on CDISC]({cdisc_url}) (Clinical Data Interchange Standards Consortium)")
 
-    # User input for search
     query = st.text_input("Enter Sponsor Name, Study Name, Study ID, or Disease")
-
     if query:
         search_results = search_studies(query)
         if not search_results.empty:
             st.subheader('Search Results')
+
             study_selection = st.selectbox('Select a study to view details', search_results['NCT Number'])
             if st.button('Show Details'):
                 study_info = view_study_details(study_selection)
